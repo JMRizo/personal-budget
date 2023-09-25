@@ -4,30 +4,19 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const port = 3000;
+const fs = require('fs');
 
+app.use(cors());
 app.use('/', express.static('public'));
-//app.use(cors());
-
-const budget = {
-    myBudget: [
-        {
-            title: 'Eat out',
-            budget: 25
-        },
-        {
-            title: 'Rent',
-            budget: 375
-        },
-        {
-            title: 'Grocery',
-            budget: 110
-        },
-    ]
-};
-
 
 app.get('/budget', (req, res) => {
-    res.json(budget);
+    fs.readFile('data.json', 'utf8', (err, data) => {
+        if (err) {
+            res.status(500).send('Error in server.js involving data.json');
+            return;
+        }
+        res.send(JSON.parse(data));
+    });
 });
 
 app.listen(port, () => {
